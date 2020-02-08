@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!python
 
 #   Copyright (c) 2019  Stephane Apiou
 #
@@ -29,6 +29,8 @@ from os import path
 from pathlib import Path
 from shutil import which
 from urllib.error import ContentTooShortError
+
+import pkg_resources
 from jinja2 import Environment, FileSystemLoader, Template
 
 version="1.0"
@@ -143,13 +145,13 @@ def generate(args):
     template_dict['user_passwd'] = args.user_pass
     template_dict['hostname'] = args.hostname
     template_dict['updates'] = updates
-    file_loader = FileSystemLoader('templates')
+    file_loader = FileSystemLoader(template_path)
     env = Environment(loader=file_loader)
     template = env.get_template('preseed.cfg')
     output = template.render(data=template_dict)
     with open("dest_image/preseed.cfg","w") as output_file:
         output_file.write(output)
-    shutil.copy("templates/isolinux.cfg", "dest_image/isolinux/txt.cfg")
+    shutil.copy(template_path+"/isolinux.cfg", "dest_image/isolinux/txt.cfg")
     subprocess.call(shlex.split("vboxmanage controlvm Debian poweroff"))
     time.sleep(2)
     subprocess.call(shlex.split("vboxmanage unregistervm --delete Debian"))
@@ -163,7 +165,7 @@ def generate(args):
         external.call_root("chown " + external.username + ":" + external.username + " " + args.out_iso)
 
     if os.path.exists("debian_disk.vmdk"): os.remove("debian_disk.vmdk")
-    subprocess.call(shlex.split("vboxmanage import templates/debian_vm.ovf"))
+    subprocess.call(shlex.split("vboxmanage import "+template_path+"/debian_vm.ovf"))
     subprocess.call(shlex.split("vboxmanage storageattach Debian --storagectl IDE --port 1 --device 0 --type dvddrive --medium "+args.out_iso))
     subprocess.call(shlex.split("vboxmanage createmedium disk --filename debian_disk.vmdk --size 40000 --variant standard"))
     subprocess.call(shlex.split("vboxmanage storageattach Debian --storagectl SATA --port 0 --device 0 --type hdd  --medium debian_disk.vmdk"))
@@ -268,12 +270,30 @@ if __name__ == '__main__':
     build.add_argument('-p', '--user-pass', help='configure user password', nargs='?', default='vagrant')
     build.add_argument('-m', '--hostname', help='configure hostname', nargs='?', default='debianhost')
     vagrant.add_argument('-d', '--debian-temp', help='use this ISO file instead of downloading', nargs='?', default='debian_temp.box')
+    try:
+        template_path = pkg_resources.resource_filename('vagrant_debian','templates/')
+    except ModuleNotFoundError:
+        template_path = 'templates'
+    print (template_path)
     res = parser.parse_args(sys.argv[1:])
     if res.version:
         print( sys.argv[0]+" version "+ version)
         exit(0)
     if res.command is None:
         res.command="create"
+        res.url = None
+        res.iso = None
+        res.type = 'stable'
+        res.headless = False
+        res.country = 'us'
+        res.root_pass = 'vagrant'
+        res.user = 'vagrant'
+        res.user_name = 'vagrant'
+        res.user_pass = 'vagrant'
+        res.hostname = 'debianhost'
+        res.debian_temp = 'debian_temp.box'
+        res.add = 'Debian'
+        res.clean = False
     if res.command == "create":
         exit(generate(res))
     if res.command == "cleanup":

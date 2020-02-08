@@ -1,0 +1,10 @@
+include vagrant_debian
+include README.md
+include MANIFEST.in
+recursive-include templates *
+recursive-include po *
+
+# Remove files created in the build
+exclude po/.intltool-merge-cache
+global-exclude *.pyc
+global-exclude *.pyo
