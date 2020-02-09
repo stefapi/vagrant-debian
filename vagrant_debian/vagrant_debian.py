@@ -29,11 +29,10 @@ from os import path
 from pathlib import Path
 from shutil import which
 from urllib.error import ContentTooShortError
+from vagrant_debian import __version__, __author__
 
 import pkg_resources
 from jinja2 import Environment, FileSystemLoader, Template
-
-version="1.0"
 
 class external_tools:
     def __init__(self):
@@ -277,7 +276,7 @@ if __name__ == '__main__':
     print (template_path)
     res = parser.parse_args(sys.argv[1:])
     if res.version:
-        print( sys.argv[0]+" version "+ version)
+        print( sys.argv[0]+" version "+ __version__)
         exit(0)
     if res.command is None:
         res.command="create"
