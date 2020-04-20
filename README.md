@@ -11,7 +11,9 @@ To run, just type on command line:
 vagrant-debian create --add --clean --headless
 ```
 
-This will silently download the Debian media, launch a virtualbox instance with the media, install the debian system, add necessary packages and create a runnable and minimal vagrant box.
+This will silently download the Official Debian media, launch a virtualbox instance with the media, install the debian system, add necessary packages and create a runnable and minimal vagrant box.
+
+The script is compatible with Jessie, Stretch, Buster, bullseye and unstable Debian versions and maybe with older (not tested) or future ones. The version is choosen with a command line option.
 
 The size of created box is around 300MB large.
 
