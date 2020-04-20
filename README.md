@@ -27,3 +27,5 @@ or:
 vagrant-debian create --help
 ```
 To display help on `create` subcommand.
+
+Have fun !
