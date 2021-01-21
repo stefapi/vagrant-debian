@@ -4,7 +4,7 @@
 """Tests for `vagrant_debian` package."""
 
 import pytest
-
+from click.testing import CliRunner
 
 from vagrant_debian import vagrant_debian
 
@@ -26,9 +26,9 @@ def test_content(response):
 def test_command_line_interface():
     """Test the CLI."""
     runner = CliRunner()
-    result = runner.invoke(cli.main)
+    result = runner.invoke(vagrant_debian.main)
     assert result.exit_code == 0
     assert 'vagrant_debian.cli.main' in result.output
-    help_result = runner.invoke(cli.main, ['--help'])
+    help_result = runner.invoke(vagrant_debian.main, ['--help'])
     assert help_result.exit_code == 0
     assert '--help  Show this message and exit.' in help_result.output

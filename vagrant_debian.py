@@ -1,6 +1,6 @@
 import sys
 
 if __name__ == '__main__':
-    import geneacrawl
-    sys.exit(geneacrawl.main())
+    import vagrant_debian
+    sys.exit(vagrant_debian.main())
 

@@ -1,6 +1,8 @@
-include vagrant_debian
 include README.md
+include LICENSE
 include MANIFEST.in
+include CONTRIBUTING.md
+include HISTORY.md
 recursive-include templates *
 recursive-include po *
 

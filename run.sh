@@ -4,12 +4,4 @@
 pipenv install
 pipenv update
 pipenv run pip freeze > requirements.txt
-vagrant box list | grep -w "^debian"
-if [[ $? != 0 ]]
-then
-  cd vagrant || exit
-  pipenv run python ./create_debianbox.py create -c fr --clean --add --headless
-  cd ..
-fi
-vagrant destroy -f
-vagrant up
+pipenv run python ./vagrant_debian.py create -c fr --clean --add --headless

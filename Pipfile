@@ -11,16 +11,18 @@ wheel = "*"
 sphinx = "*"
 twine = "*"
 tox = "*"
-"flake8" = "*"
+flake8 = "*"
 pylint = "*"
 pytest = "*"
 isort = "*"
 yapf = "*"
-
+task= "*"
+pathlib2 = "*"
 
 [packages]
 jinja2="*"
-vagrant_debian= {path = ".", editable = true}
+wheel = "*"
+babel = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
