@@ -65,20 +65,20 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    apt update
-    apt install -y dkms
-    wget https://download.virtualbox.org/virtualbox/LATEST.TXT
-    VER=`cat LATEST.TXT`;wget https://download.virtualbox.org/virtualbox/$VER/VBoxGuestAdditions_$VER.iso
-    mount -o loop VBoxGuestAdditions_*.iso /mnt
+    DEBIAN_FRONTEND=noninteractive apt update
+    DEBIAN_FRONTEND=noninteractive apt install -y dkms
+    wget -q https://download.virtualbox.org/virtualbox/LATEST.TXT
+    VER=`cat LATEST.TXT`;wget -q https://download.virtualbox.org/virtualbox/$VER/VBoxGuestAdditions_$VER.iso
+    mount -o loop VBoxGuestAdditions_*.iso /mnt >/dev/null 2>&1
     /mnt/VBoxLinuxAdditions.run
     umount /mnt
-    rm *
+    rm -f *
     DEBIAN_FRONTEND=noninteractive apt purge -y dkms installation-report discover usbutils
     DEBIAN_FRONTEND=noninteractive apt autoremove --purge -y -o APT::AutoRemove::RecommendsImportant=False -o APT::AutoRemove::SuggestsImportant=False
-    apt autoclean
-    apt clean
+    DEBIAN_FRONTEND=noninteractive apt autoclean
+    DEBIAN_FRONTEND=noninteractive apt clean
     rm -rf /var/lib/apt/lists
     rm -f /var/lib/dpkg/*-old
-    cat /dev/zero > zero.file; sync; rm zero.file
+    cat /dev/zero > zero.file 2>/dev/null; sync; rm zero.file
   SHELL
 end
