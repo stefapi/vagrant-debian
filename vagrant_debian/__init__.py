@@ -4,7 +4,7 @@
 
 __author__ = """Stephane Apiou"""
 __email__ = "stephane@apiou.org"
-__version__ = "0.1.0"
+__version__ = "1.0.9"
 
 from .vagrant_debian import main
 

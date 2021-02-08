@@ -3,8 +3,8 @@ include LICENSE
 include MANIFEST.in
 include CONTRIBUTING.md
 include HISTORY.md
-recursive-include templates *
-recursive-include po *
+graft vagrant_debian/templates
+graft po
 
 # Remove files created in the build
 exclude po/.intltool-merge-cache

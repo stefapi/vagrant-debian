@@ -4,4 +4,4 @@
 pipenv install
 pipenv update
 pipenv run pip freeze > requirements.txt
-pipenv run python ./vagrant_debian.py create -c fr --clean --add --headless
+pipenv run python ./start.py create -c fr --clean --add --headless

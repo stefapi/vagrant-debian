@@ -40,6 +40,7 @@ from vagrant_debian import __version__
 from babel import Locale
 from gettext import gettext as _
 
+
 class ExternalTools:
     """
         Class which check if external tools are installed in the system. This class detects also if you are logged in
@@ -77,11 +78,10 @@ class ExternalTools:
 
     def call(self, command):
         """
-        Call an external program without provileges
+        Call an external program without privileges
         :param command: command to run
         """
         return subprocess.call(shlex.split(command))
-
 
 
 country = {
@@ -158,7 +158,7 @@ def generate(args, template_path):
     subprocess.call(shlex.split("chmod -R u+w dest_image"))
     for filename in os.listdir("dest_image/isolinux"):
         if filename.endswith(".cfg"):
-            fullname = "dest_image/isolinux/" + filename
+            fullname = os.path.join("dest_image/isolinux/",filename)
             with open("output", "w") as out:
                 for line in open(fullname, "r"):
                     match = re.search("^timeout .*$", str(line))
@@ -180,7 +180,7 @@ def generate(args, template_path):
     output = template.render(data=template_dict)
     with open("dest_image/preseed.cfg", "w") as output_file:
         output_file.write(output)
-    shutil.copy(template_path + "/isolinux.cfg", "dest_image/isolinux/txt.cfg")
+    shutil.copy(os.path.join(template_path, "isolinux.cfg"), "dest_image/isolinux/txt.cfg")
     subprocess.call(shlex.split("vboxmanage controlvm Debian poweroff"))
     time.sleep(2)
     subprocess.call(shlex.split("vboxmanage unregistervm --delete Debian"))
@@ -245,6 +245,7 @@ def generate(args, template_path):
     subprocess.call(
         shlex.split("vagrant box add --force --name Debian_temp debian_temp.box")
     )
+    shutil.copy(os.path.join(template_path, "Vagrantfile"), "Vagrantfile")
     subprocess.call(shlex.split("vagrant destroy -f"))
     subprocess.call(shlex.split("vagrant up"))
     if os.path.exists(args.output):
@@ -254,6 +255,7 @@ def generate(args, template_path):
     subprocess.call(shlex.split("vagrant box remove -f Debian_temp"))
     if os.path.exists("debian_temp.box"):
         os.remove("debian_temp.box")
+    os.remove("Vagrantfile")
     if args.add is not None:
         subprocess.call(
             shlex.split(
@@ -327,7 +329,7 @@ def main():
     main program
     """
 
-    l = Locale.parse('fr')
+    Locale.parse('fr')
 
     parser = argparse.ArgumentParser(
         description="generate Vagrant box from Debian iso file"
@@ -360,9 +362,6 @@ def main():
     )
     remove = subparsers.add_parser(
         "cleanup", help="cleanup directory and remove all generated files"
-    )
-    vagrant = subparsers.add_parser(
-        "vagrant", help="cleanup directory and remove all generated files"
     )
     remove.add_argument(
         "-a",
@@ -436,18 +435,13 @@ def main():
     build.add_argument(
         "-m", "--hostname", help="configure hostname", nargs="?", default="debianhost"
     )
-    vagrant.add_argument(
-        "-d",
+    build.add_argument(
+        "-D",
         "--debian-temp",
         help="use this ISO file instead of downloading",
         nargs="?",
         default="debian_temp.box",
     )
-    try:
-        template_path = pkg_resources.resource_filename(".", "templates/")
-    except ModuleNotFoundError:
-        template_path = "templates"
-    print(template_path)
     res = parser.parse_args(sys.argv[1:])
     if res.version:
         print(sys.argv[0] + " version " + __version__)
@@ -467,6 +461,7 @@ def main():
         res.debian_temp = "debian_temp.box"
         res.add = "Debian"
         res.clean = False
+    template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"templates")
     if res.command == "create":
         sys.exit(generate(res, template_path))
     if res.command == "cleanup":
