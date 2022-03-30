@@ -15,6 +15,7 @@ To run, just type on command line:
 This will silently download the Official Debian media, launch a virtualbox instance with the media, install the debian system, add necessary packages and create a runnable and minimal vagrant box.
 
 The script is compatible with Jessie, Stretch, Bullseye and unstable Debian versions and maybe with older (not tested) or future ones. The version is choosen with a command line option.
+
 Warning: with Buster, you have to install virtualbox by yourself as it's not part of standard Debian packages.
 
 The size of created box is around 300MB large.
